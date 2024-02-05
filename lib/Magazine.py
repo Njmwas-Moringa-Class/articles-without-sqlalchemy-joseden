@@ -20,6 +20,7 @@ class Magazine:
         return list(set(article.author() for article in self._articles))
 
     def add_article(self, author, title):
+        from Article import Article
         new_article = Article(author, self, title)
         self._articles.append(new_article)
         return new_article
