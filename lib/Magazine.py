@@ -1,11 +1,13 @@
+from Article import Article 
+
 class Magazine:
-    _all_magazines = []
+    all_magazines = []
 
     def __init__(self, name, category):
         self._name = name
         self._category = category
         self._articles = []
-        Magazine._all_magazines.append(self)
+        Magazine.all_magazines.append(self)
 
     def name(self):
         return self._name
@@ -13,27 +15,37 @@ class Magazine:
     def category(self):
         return self._category
 
-    def all():
-        return Magazine._all_magazines
+    def set_name(self, new_name):
+        self._name = new_name
 
-    def contributors(self):
-        return list(set(article.author() for article in self._articles))
-
-    def add_article(self, author, title):
-        from Article import Article
-        new_article = Article(author, self, title)
-        self._articles.append(new_article)
-        return new_article
+    def set_category(self, new_category):
+        self._category = new_category
 
     @classmethod
     def find_by_name(cls, name):
-        return next((magazine for magazine in cls._all_magazines if magazine.name() == name), None)
+        for magazine in cls.all_magazines:
+            if magazine.name() == name:
+                return magazine
+        return None
 
     @classmethod
     def article_titles(cls):
-        return [article.title() for magazine in cls._all_magazines for article in magazine._articles]
+        titles = []
+        for magazine in cls.all_magazines:
+            for article in magazine._articles:
+                titles.append(article.title())
+        return titles
+
+    def contributing_authors(self):
+        authors = []
+        for article in self._articles:
+            authors.append(article.author().name())
+        return list(set(authors))
+
+    def add_article(self, author, title):
+        new_article = Article(author, self, title)
+        self._articles.append(new_article)
 
     @classmethod
-    def contributing_authors(cls):
-        return [author for magazine in cls._all_magazines for author in magazine.contributors() if len(author.articles()) > 2]
-    
+    def all(cls):
+        return cls.all_magazines
